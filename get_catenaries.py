@@ -52,9 +52,12 @@ def get_cat_btwn_2points(point1, point2, length, path_to_fig = "figs/plotting.jp
     w = 0  # submerged weight (rigid Catenary)
     EA = None  # axial stiffness (rigid Catenary)
     floor = False  # if True, contact is possible at the level of the anchor
-    anchor = [0., 0., 0.]
-    diff = point2-point1
-    fairlead = [diff[0], 0., diff[1]]
+    # anchor = [0., 0., 0.]
+    # diff = point2-point1
+    # fairlead = [diff[0], 0., diff[1]]
+    print(point1, point2)
+    anchor = [point1[0], 0., point1[1]]
+    fairlead = [point2[0], 0., point2[1]]
 
     # create cable instance
     l1 = cable.MooringLine(L=length,
@@ -68,10 +71,10 @@ def get_cat_btwn_2points(point1, point2, length, path_to_fig = "figs/plotting.jp
     l1.computeSolution()
     
     # plot cable cable.MooringLine instance l1
-    l1.plot2D(path_to_fig=path_to_fig)
+    if path_to_fig:
+        l1.plot2D(path_to_fig=path_to_fig)
     
     return l1
-
 
 
 if __name__ == "__main__":
@@ -81,5 +84,16 @@ if __name__ == "__main__":
     A = np.array([50,50])
     B = np.array([100, 70])
     L = 250
-
+    # longitude 12.921033822098877
+    # [3.64 7.76] [6.57 8.45]
+    # # Example 1
+    # A = np.array([0.22, 7.91])
+    # B = np.array([5.87, 8.37])
+    # L = 9.98
+    # # Example 2 
+    A = np.array([2.49, 7.76])
+    B = np.array([9, 7])
+    L = 15
+    
+    # get_cat_btwn_2points(A,B,L,None)
     get_cat_btwn_2points(A,B,L)

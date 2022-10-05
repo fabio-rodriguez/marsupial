@@ -3,7 +3,8 @@ import numpy as np
 
 from tools import *
 
-def calc_parabola_vertex(x1, y1, x2, y2, x3, y3, plotting = False):
+
+def get_par_from_3points(x1, y1, x2, y2, x3, y3, plotting = False):
     '''
     Adapted and modifed to get the unknowns for defining a parabola:
     http://stackoverflow.com/questions/717762/how-to-calculate-the-vertex-of-a-parabola-given-three-points
@@ -31,7 +32,6 @@ def calc_parabola_vertex(x1, y1, x2, y2, x3, y3, plotting = False):
 
 def approx_parabola_length(P1, P2, P3, A, B, C, delta=10**-4):
     
-    A, B, C = coef
     axis = [P1[0], P2[0], P3[0]]
     Xmin = min(axis) 
     Xmax = max(axis)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     P2=[-1,-1]
     P3=[3,4]
 
-    coef, eq = calc_parabola_vertex(P1[0], P1[1], P2[0], P2[1], P3[0], P3[1], plotting=True)
+    coef, eq = get_par_from_3points(P1[0], P1[1], P2[0], P2[1], P3[0], P3[1], plotting=False)
     # print(eq)
 
     A, B, C = coef
