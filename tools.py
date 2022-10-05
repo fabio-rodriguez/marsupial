@@ -11,7 +11,7 @@ def plot_cat_and_par(X1, X2, par, cat, delta, path_to_img=None, show_img=False):
     A, B, C = par
     N = X2 - X1 # Assuming the exps are generated in experiments.py with P1_x < P2_x < P3_x        
     Xs, Ys_par = [], []
-    for i in range(int(N/delta)):
+    for i in range(int(N/10**-2)):
         x = X1 + i*delta            
         par_y = A*x**2+B*x+C
 
@@ -39,9 +39,14 @@ def par_cat_comparison(X1, X2, par, cat, delta):
         Xs.append(x)
         Ys_par.append(par_y)
 
-    cat.plot2D()
-    plt.plot(Xs, Ys_par, "-r")
-    plt.show()
-    plt.close()
+    dd, hh = [], []
+    ss = np.linspace(0., np.sum(cat.L), int(N/delta))
+    for s in ss:
+        xyz = cat.s2xyz(s)
+        dd.append(np.sqrt(xyz[0]**2+xyz[1]**2))
+        hh.append(xyz[2])
 
+    diffs = [abs(z1-z2) for z1, z2 in zip(Ys_par, hh)]
+    total = sum(diffs)
 
+    return {"total": total, "max": max(diffs), "mean": total/len(diffs)}

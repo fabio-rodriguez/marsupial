@@ -12,7 +12,11 @@ def simulate(path_to_data="data/experiments.json", delta=10**-4, plotting=False,
     with open(path_to_data, "r") as f:
         exps = json.loads(f.read())
 
+    slm_name = "Same Length Method"
+    results = {slm_name: {"mean":[], "max":[], "total":[]}}
     for i, exp in enumerate(exps):
+        print(f"**Experiment {i}")
+
         P1 = np.array(exp["A"])        
         P2 = np.array(exp["B"])        
         P3 = np.array(exp["C"]) 
@@ -21,19 +25,26 @@ def simulate(path_to_data="data/experiments.json", delta=10**-4, plotting=False,
 
         A, B, C = coefs
         L = approx_parabola_length(P1, P2, P3, A, B, C)
-        print("longitude", L)
         cat = get_cat_btwn_2points(P1, P3, L, path_to_fig=None)
         
         if plotting:
-            plot_cat_and_par(P1[0], P3[0], coefs, cat, delta)
+            plot_cat_and_par(P1[0], P3[0], coefs, cat, delta, path_to_fig=f"figs/exps/{slm_name}_{i}.jpg")
 
-        N = P3[0] - P1[0] # Assuming the exps are generated in experiments.py with P1_x < P2_x < P3_x
+        diffs = par_cat_comparison(P1[0], P3[0], coefs, cat, delta)
+        for k, v in diffs.items():
+            results[slm_name][k].append(v)
 
-        par_cat_comparison(P1[0], P3[0], coefs, cat, delta)
+    for method in results:
+        for k, v in results[method].items():
+            results[method][k] = sum(v)/len(v)
+        
+    print(results)
+    with open("data/results.json", "w+") as f: 
+        f.write(json.dumps(results))
 
-
+    return results
 
 if __name__ == "__main__":
 
-    simulate(show_img=False)
+    simulate(show_img=False, delta=10**-2)
 

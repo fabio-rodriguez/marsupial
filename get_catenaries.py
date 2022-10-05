@@ -55,7 +55,6 @@ def get_cat_btwn_2points(point1, point2, length, path_to_fig = "figs/plotting.jp
     # anchor = [0., 0., 0.]
     # diff = point2-point1
     # fairlead = [diff[0], 0., diff[1]]
-    print(point1, point2)
     anchor = [point1[0], 0., point1[1]]
     fairlead = [point2[0], 0., point2[1]]
 
