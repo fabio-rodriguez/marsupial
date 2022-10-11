@@ -30,7 +30,7 @@ def get_par_from_3points(x1, y1, x2, y2, x3, y3, plotting = False):
     return [A, B, C], f"({A})x^2 + ({B})x + ({C})"
 
 
-def approx_parabola_length(P1, P2, P3, A, B, C, delta=10**-4):
+def approx_parable_length(P1, P2, P3, A, B, C, delta=10**-4):
     
     axis = [P1[0], P2[0], P3[0]]
     Xmin = min(axis) 
@@ -51,6 +51,15 @@ def approx_parabola_length(P1, P2, P3, A, B, C, delta=10**-4):
     return L    
 
 
+def get_parable_vertex_form(A, B, C):
+    
+    h = -B/(2*A)
+    k = A*h**2 + B*h + C
+
+    return [A, h, k], f"y={A}*(x-({h}))^2+{k}"
+
+
+
 if __name__ == "__main__":
 
     P1=[-20, 0]
@@ -61,6 +70,6 @@ if __name__ == "__main__":
     # print(eq)
 
     A, B, C = coef
-    L = approx_parabola_length(P1, P2, P3, A, B, C)
+    L = approx_parable_length(P1, P2, P3, A, B, C)
 
     print(L)

@@ -1,3 +1,4 @@
+from cProfile import label
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -49,4 +50,27 @@ def par_cat_comparison(X1, X2, par, cat, delta):
     diffs = [abs(z1-z2) for z1, z2 in zip(Ys_par, hh)]
     total = sum(diffs)
 
+    return {"total": total, "max": max(diffs), "mean": total/len(diffs)}
+
+
+def generic_functions_comparison(f1, f2, range_, delta):
+    
+    a, b = range_
+    Xs = []
+    Ys1, Ys2 = [], []
+    diffs = []
+    for i in range(int((b-a)/delta)):
+        x = a+delta*i
+        Xs.append(x)
+        Ys1.append(f1(x))
+        Ys2.append(f2(x))
+        
+        diffs.append(abs(f1(x)-f2(x)))
+    
+    plt.plot(Xs, Ys1, label="f1")
+    plt.plot(Xs, Ys2, label="f2")
+    plt.legend()
+    plt.show()
+
+    total = sum(diffs)
     return {"total": total, "max": max(diffs), "mean": total/len(diffs)}
