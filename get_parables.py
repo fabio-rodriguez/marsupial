@@ -60,16 +60,45 @@ def get_parable_vertex_form(A, B, C):
 
 
 
+def get_parable_vertex_from_origin(P1, P2, a0):
+    
+    # Assuming x3 > x1 and y3 > y1
+    x1, h1 = P1
+    x2, h2 = P2
+    S = x2 - x1
+    
+    xmin = S/2 - (h2-h1)/(2*a0*S)
+    ymin = h1 - a0*(xmin)**2
+    
+    return [a0, xmin, ymin], f"y={A}*(x-({xmin}))^2+{ymin}"
+
+
+
 if __name__ == "__main__":
 
-    P1=[-20, 0]
-    P2=[-1,-1]
-    P3=[3,4]
+    P1=[-10, 1]
+    P2=[3,-6]
+    P3=[6,6]
 
     coef, eq = get_par_from_3points(P1[0], P1[1], P2[0], P2[1], P3[0], P3[1], plotting=False)
     # print(eq)
 
     A, B, C = coef
-    L = approx_parable_length(P1, P2, P3, A, B, C)
+    # L = approx_parable_length(P1, P2, P3, A, B, C)
 
-    print(L)
+    # print(L)
+
+    # coef2, s = get_parable_vertex_form(A, B, C)
+    coef2, s = get_parable_vertex_from_origin(P1, P3, A)
+    # print(s)
+    
+    a0, h,k = coef2
+
+    Xs = [-50+i for i in range(101)]
+    Ys1 = [A*x**2+B*x+C for x in Xs]
+    Ys2 = [A*(x-h)**2+k for x in Xs]
+
+    plt.plot(Xs,Ys1,"b")
+    plt.plot(Xs,Ys2,"--r")
+    plt.show()
+

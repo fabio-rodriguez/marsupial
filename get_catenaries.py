@@ -1,6 +1,7 @@
 import numpy as np
 
 from pycatenary import cable
+from tools import *
 
 
 def example():
@@ -74,6 +75,39 @@ def get_cat_btwn_2points(point1, point2, length, path_to_fig = "figs/plotting.jp
         l1.plot2D(path_to_fig=path_to_fig)
     
     return l1
+
+
+def approx_optimal_cat(P1, P3, par, max_cat_len, delta, path_to_fig):
+
+    A, B, C = par
+    min_cat_len = euclidian_dist(P1, P3)
+    while True:
+        mid_len = (max_cat_len + min_cat_len)/2
+        mid_cat = get_cat_btwn_2points(P1, P3, mid_len, path_to_fig=None)
+        
+        if max_cat_len - min_cat_len < delta:
+            cat_result=mid_cat
+            break 
+
+        # greater distance axis
+        # diffs = par_cat_comparison(P1[0], P3[0], par, mid_cat, delta)
+        diffs = par_cat_comparison(P1[0], P3[0], par, mid_cat, delta)
+        x_max = diffs["x_max"] 
+        y_par = A*x_max**2+B*x_max+C 
+        
+        z_cat = diffs["max_z_cat"] 
+        
+        if  y_par > z_cat:
+            max_cat_len = mid_len
+        else:
+            min_cat_len = mid_len
+
+    if path_to_fig:
+        cat_result.plot2D(path_to_fig=path_to_fig)
+
+    return cat_result  
+
+
 
 
 if __name__ == "__main__":
