@@ -101,3 +101,16 @@ def generic_functions_comparison(f1, f2, range_, delta, plotting=None):
 
     total = sum(diffs)
     return {"total": total, "max": max(diffs), "mean": total/len(diffs)}
+
+def area_under_curve(curve_waypoints):
+    area = 0
+    for i in range(len(curve_waypoints)-1):
+        p1 = curve_waypoints[i]
+        p2 = curve_waypoints[i+1]
+
+        h = p2[0] - p1[0]
+        area += h*(p1[1]+p2[1])/2
+
+    return area
+
+
