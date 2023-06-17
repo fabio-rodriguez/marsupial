@@ -113,4 +113,10 @@ def area_under_curve(curve_waypoints):
 
     return area
 
+def solve_linear_system(coef_matrix, b):
+    return np.linalg.solve(coef_matrix, b)
+
+
+
+
 
