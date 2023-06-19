@@ -111,3 +111,33 @@ def touch_the_ground(f, interval, delta=10**-3):
             return True
 
     return False
+
+def area_under_curve(curve_waypoints):
+    area = 0
+    for i in range(len(curve_waypoints)-1):
+        p1 = curve_waypoints[i]
+        p2 = curve_waypoints[i+1]
+
+        h = p2[0] - p1[0]
+        area += h*(p1[1]+p2[1])/2
+
+    return area
+
+
+def get_par_eq_from_area(A, B, area):
+    # yA = pxA^2 + qxA + r
+    # yB = pxB^2 + qxB + r
+    # area = int(A, B, px^2+qx+r)
+    # F = px^3/3 + qx^2/2 + rx
+    # area = p(xA^3-xB^3)/3 + q(xA^2-xB^2)/2 + r(xA-xB)
+
+    M = np.array([
+        [A[0]**2, A[0], 1],
+        [B[0]**2, B[0], 1],
+        [(A[0]**3-B[0]**3)/3, (A[0]**2-B[0]**2)/2, A[0]-B[0]]
+    ])
+    b = np.array([A[1], B[1], area])
+
+    return np.linalg.solve(M, b)
+
+    
