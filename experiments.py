@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
-from get_parables import touch_the_ground, get_par_from_3points, approx_parable_length
+from get_paraboles import touch_the_ground, get_par_from_3points, approx_parable_length
 
 
 def get_experiments(N, side, path="data/experiments.json"):
