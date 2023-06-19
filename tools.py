@@ -101,3 +101,13 @@ def generic_functions_comparison(f1, f2, range_, delta, plotting=None):
 
     total = sum(diffs)
     return {"total": total, "max": max(diffs), "mean": total/len(diffs)}
+
+
+def touch_the_ground(f, interval, delta=10**-3):
+
+    X1, X2 = interval
+    for i in range(int((X2-X1)/delta)):
+        if f(X1+i*delta) <= 0:
+            return True
+
+    return False
