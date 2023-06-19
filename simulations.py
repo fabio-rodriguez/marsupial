@@ -6,7 +6,7 @@ import numpy as np
 import time
 
 from get_catenaries import get_cat_btwn_2points, approx_optimal_cat
-from get_parables import get_par_from_3points, approx_parable_length, get_parable_vertex_form, get_parable_vertex_from_origin
+from get_paraboles import get_par_from_3points, approx_parable_length, get_parable_vertex_form, get_parable_vertex_from_origin
 from tools import *
 
 
@@ -53,6 +53,7 @@ def simulate(path_to_data="data/experiments.json", max_cat_len = 60, delta=10**-
         vfcm_name: {"mean":[], "max":[], "total":[], "time": []},
         optm_name: {"mean":[], "max":[], "total":[], "time": []}
     }
+
     for i, exp in enumerate(exps[99:]):
         print(f"**Experiment {i}")
 
@@ -71,6 +72,7 @@ def simulate(path_to_data="data/experiments.json", max_cat_len = 60, delta=10**-
         
         # if plotting:
         #     plot_cat_and_par(P1[0], P3[0], coefs, cat, delta, path_to_img=f"figs/exps/{slm_name}_{i}.jpg")
+
 
         diffs = par_cat_comparison(P1[0], P3[0], coefs, cat, delta)
         for k, v in diffs.items():
@@ -101,11 +103,6 @@ def simulate(path_to_data="data/experiments.json", max_cat_len = 60, delta=10**-
         #     plt.savefig(f"figs/vertex_coef_method/{i}.jpg")
         #     plt.close()
 
-        diffs = generic_functions_comparison(par, cat2, [P1[0], P3[0]], delta)
-        for k, v in diffs.items():
-            if k in results[vfcm_name]:
-                results[vfcm_name][k].append(v)
-            
         # Approx optimal catenary
         t = time.time() 
         opt_cat = approx_optimal_cat(P1, P3, coefs, max_cat_len, delta=delta, path_to_fig=None)
@@ -187,8 +184,76 @@ def simulate(path_to_data="data/experiments.json", max_cat_len = 60, delta=10**-
 
     return results
 
+
+def area_comparison(path_to_data="data/experiments.json", delta=10**-4):
+    
+    with open(path_to_data, "r") as f:
+        exps = json.loads(f.read())
+
+    results = {}
+    print(f'Total Exp: {len(exps)}')
+    for i, exp in enumerate(exps):
+        print(f'*** Exp {i}')
+
+        P1 = np.array(exp["A"])        
+        P2 = np.array(exp["B"])        
+        P3 = np.array(exp["C"]) 
+
+        coefs, eq = get_par_from_3points(P1[0], P1[1], P2[0], P2[1], P3[0], P3[1])       
+        A, B, C = coefs
+
+        L = approx_parable_length(P1, P2, P3, A, B, C)
+        cat = get_cat_btwn_2points(P1, P3, L, path_to_fig=None)
+
+        xyzs = []
+        dd = []
+        hh = []
+        ss = np.linspace(0., np.sum(cat.L), int(abs((P2[0]-P1[0]))/delta))
+        for s in ss:
+            xyz = cat.s2xyz(s)
+            xyzs.append(xyz)
+            dd.append(np.sqrt(xyz[0]**2+xyz[1]**2))
+            hh.append(xyz[2])
+    
+        area = area_under_curve(list(zip(dd, hh)))
+        
+        # print(area)
+        # plt.plot([P1[0], P3[0]], [P1[1], P3[1]], 'or')
+        # plt.plot(dd, hh)
+        # plt.show()
+
+        coefs = get_par_eq_from_area(P1, P3, area)
+        diffs = par_cat_comparison(P1[0], P3[0], coefs, cat, delta)
+        # print(diffs)
+        # print(coefs)
+        # plot_cat_and_par(P1[0], P3[0], coefs, cat, delta, show_img=True)#path_to_img=f'{i}.jpg')
+        
+        p, q, r = coefs
+        # par = lambda x: p*x**2+q*x+r
+        # diffs = generic_functions_comparison(par, cat, [P1[0], P3[0]], delta)
+        diffs = par_cat_comparison(P1[0], P3[0], coefs, cat, delta)
+        
+        for k, v in diffs.items():
+            try:
+                results[k].append(v)
+            except:
+                results[k] = [v]
+
+    clean_results = {}
+    for k, v in results.items():
+        clean_results[f"{k}_std"] = np.std(v)
+        clean_results[k] = np.mean(v)
+
+    print(clean_results)
+
+
+
+
+
 if __name__ == "__main__":
 
-    simulate(show_img=False, delta=10**-2, plotting=True)
+    simulate(show_img=False, delta=10**-2)
 
     # plot_parabolas()
+
+    # area_comparison(delta=10**-2)

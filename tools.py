@@ -134,10 +134,58 @@ def get_par_eq_from_area(A, B, area):
     M = np.array([
         [A[0]**2, A[0], 1],
         [B[0]**2, B[0], 1],
-        [(A[0]**3-B[0]**3)/3, (A[0]**2-B[0]**2)/2, A[0]-B[0]]
+        [(B[0]**3-A[0]**3)/3, (B[0]**2-A[0]**2)/2, B[0]-A[0]]
     ])
     b = np.array([A[1], B[1], area])
 
     return np.linalg.solve(M, b)
 
+
+def get_par_eq_from_area_example(A, B, area):
+    # yA = pxA^2 + qxA + r
+    # yB = pxB^2 + qxB + r
+    # area = int(A, B, px^2+qx+r)
+    # F = px^3/3 + qx^2/2 + rx
+    # area = p(xA^3-xB^3)/3 + q(xA^2-xB^2)/2 + r(xA-xB)
+
+    M = np.array([
+        [A[0]**2, A[0], 1],
+        [B[0]**2, B[0], 1],
+        [(B[0]**3-A[0]**3)/3, (B[0]**2-A[0]**2)/2, B[0]-A[0]]
+    ])
+    b = np.array([A[1], B[1], area])
+
+    print('M', M)
+    print('b', b)
+    print('det', np.linalg.det(M))
+    print('lstsq', np.linalg.lstsq(M, b)[0])
+    print('solve', np.linalg.solve(M, b))
+
+    p, q, r = np.linalg.solve(M, b)
+    p2, q2, r2 = 1,0,0
+    p3, q3, r3 = np.linalg.lstsq(M, b)[0]
+
+    Xs, Ys_par, Ys_par2, Ys_par3 = [], [], [], []
+    for i in range(int(4/10**-5)):
+        x = A[0] + i*10**-5            
+        par_y = p*x**2+q*x+r
+        par_y2 = p2*x**2+q2*x+r2
+        par_y3 = p3*x**2+q3*x+r3
+
+        Xs.append(x)
+        Ys_par.append(par_y)
+        Ys_par2.append(par_y2)
+        Ys_par3.append(par_y3)
+
+    plt.plot(Xs, Ys_par, '--')
+    plt.plot(Xs, Ys_par2, '--')
+    plt.plot(Xs, Ys_par3, label="lstsq")
+    plt.show()
+
+    return np.linalg.solve(M, b)
+
     
+if __name__ == "__main__":
+
+    coef = get_par_eq_from_area((0,0), (3,9), 10)
+    print(coef)
