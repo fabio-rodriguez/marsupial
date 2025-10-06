@@ -86,6 +86,7 @@ def get_experiments3(N, side, Lmax=50, path="data/experiments.json"):
             f = lambda x: A*x**2 + B*x + C
 
             length = approx_parable_length([xP1, yP1], [xP2, yP2], [xP3, yP3], A, B, C)
+            print("length", length)
             if not touch_the_ground(f, [int(xP1)+1, int(xP3)-1], delta=10**-3) and length < Lmax:
                 print(length)
                 break

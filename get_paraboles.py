@@ -51,6 +51,42 @@ def approx_parable_length(P1, P2, P3, A, B, C, delta=10**-4):
     return L    
 
 
+def parabola_sag(P1, P3, A, B, C):
+    x1, y1 = P1
+    x3, y3 = P3
+    
+    # vertex of parabola
+    xv = -B / (2*A)
+    yv = A*xv**2 + B*xv + C
+    
+    # chord line evaluated at xv
+    yc = y1 + (y3 - y1)/(x3 - x1) * (xv - x1)
+    
+    # sag is the vertical distance
+    sag = yc - yv
+    return sag
+
+def parabola_max_sag(P1, P3, A, B, C, npoints=1000):
+    x1, y1 = P1
+    x3, y3 = P3
+    
+    # parametric chord line
+    m = (y3 - y1) / (x3 - x1) if x3 != x1 else None
+    
+    xs = np.linspace(min(x1, x3), max(x1, x3), npoints)
+    ys_par = A*xs**2 + B*xs + C
+    
+    if m is not None:
+        ys_chord = y1 + m * (xs - x1)
+        dists = np.abs(ys_chord - ys_par)   # vertical distance
+    else:
+        # vertical chord case: distance is horizontal
+        dists = np.abs(xs - x1)
+    
+    idx = np.argmax(dists)
+    return dists[idx]
+
+
 def get_parable_vertex_form(A, B, C):
     
     h = -B/(2*A)
